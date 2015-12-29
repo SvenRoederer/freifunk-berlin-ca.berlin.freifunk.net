@@ -8,6 +8,6 @@ db = SQLAlchemy(app)
 app.config.from_object('config')
 
 # Load the configuration from the instance folder
-app.config.from_pyfile('config.py')
+app.config.from_pyfile('config.py', silent=True)
 
 import ca.views
