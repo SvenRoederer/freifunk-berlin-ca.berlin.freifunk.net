@@ -4,8 +4,8 @@
 import datetime
 from subprocess import call
 
-#from ca import app, db
-#from ca.models import Request
+from ca import app, db
+from ca.models import Request
 
 from OpenSSL import crypto, SSL
 from os.path import exists, join
