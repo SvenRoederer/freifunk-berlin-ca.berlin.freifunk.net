@@ -11,7 +11,7 @@ from OpenSSL import crypto, SSL
 from os.path import exists, join
 
 # taken from https://gist.github.com/ril3y/1165038
-def create_cert(cert_name, cert_email, cert_key):
+def create_cert(cert_name, cert_email, cert_sn, cert_key):
     """
     If datacard.crt and datacard.key don't exist in cert_dir, create a new
     self-signed cert and keypair and write them into that directory.
@@ -34,7 +34,7 @@ def create_cert(cert_name, cert_email, cert_key):
         cert.get_subject().O = "Foerderverein Freie Netzwerke e.V."
         cert.get_subject().CN = "freifunk_%s" % cert_name
         cert.get_subject().emailAddress = cert_email
-        cert.set_serial_number(1000)
+        cert.set_serial_number(cert_sn)
         cert.gmtime_adj_notBefore(0)
         cert.gmtime_adj_notAfter(10*365*24*60*60)
         cert.set_issuer(ca_cert.get_subject())
@@ -55,7 +55,6 @@ def create_cert(cert_name, cert_email, cert_key):
 
         cert.sign(ca_key, 'sha1')
 
-        print (crypto.dump_certificate(crypto.FILETYPE_TEXT, cert))
         return (cert)
 
 def create_key():
@@ -72,9 +71,13 @@ for request in Request.query.filter(Request.generation_date == None).all():  # n
     print("Type y to continue")
     confirm = input('>')
     if confirm in ['Y', 'y']:
-        print('generating certificate')
+        print('generating key')
         new_key = create_key()
-        new_cert = create_cert(request.id, request.email, new_key)
+        print('generating certificate')
+        new_cert_sn = db.session.query(db.func.max(Request.cert_sn)).scalar() + 1
+        request.cert_sn = new_cert_sn
+        new_cert = create_cert(request.id, request.email, request.cert_sn, new_key)
+        print (crypto.dump_certificate(crypto.FILETYPE_TEXT, new_cert))
         # construct the TAR-archive here
         # and maybe rework the email-code
         #call([app.config['COMMAND_BUILD'], request.id, request.email])
