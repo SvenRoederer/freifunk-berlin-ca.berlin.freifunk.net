@@ -74,7 +74,7 @@ for request in Request.query.filter(Request.generation_date == None).all():  # n
         print('generating key')
         new_key = create_key()
         print('generating certificate')
-        new_cert_sn = db.session.query(db.func.max(Request.cert_sn)).scalar() + 1
+        new_cert_sn = Request.getMaxCertSn() + 1
         request.cert_sn = new_cert_sn
         new_cert = create_cert(request.id, request.email, request.cert_sn, new_key)
         print (crypto.dump_certificate(crypto.FILETYPE_TEXT, new_cert))
