@@ -18,9 +18,9 @@ def create_cert(cert_name, cert_email, cert_sn, cert_key):
     """
 
     # get required CA-data
-    ca_cert_file = open(app.config['CA_CERT_FILE'], 'r')
+    ca_cert_file = open(app.config['CACERT_FILE'], 'r')
     ca_cert = crypto.load_certificate(crypto.FILETYPE_PEM, ca_cert_file.read())
-    ca_key_file = open(app.config['CA_KEY_FILE'], 'r')
+    ca_key_file = open(app.config['CAKEY_FILE'], 'r')
     ca_key = crypto.load_privatekey(crypto.FILETYPE_PEM, ca_key_file.read())
 
     if True:
@@ -28,15 +28,15 @@ def create_cert(cert_name, cert_email, cert_sn, cert_key):
         # create a self-signed cert
         cert = crypto.X509()
         cert.set_version(0x02)  # X509-Version 3
-        cert.get_subject().C = app.config['NEW_CERT_COUNTRY']
-        cert.get_subject().ST = app.config['NEW_CERT_STATE']
-        cert.get_subject().L = app.config['NEW_CERT_LOCATION']
-        cert.get_subject().O = app.config['NEW_CERT_ORGANIZATION']
+        cert.get_subject().C = app.config['NEWCERT_COUNTRY']
+        cert.get_subject().ST = app.config['NEWCERT_STATE']
+        cert.get_subject().L = app.config['NEWCERT_LOCATION']
+        cert.get_subject().O = app.config['NEWCERT_ORGANIZATION']
         cert.get_subject().CN = "freifunk_%s" % cert_name
         cert.get_subject().emailAddress = cert_email
         cert.set_serial_number(cert_sn)
         cert.gmtime_adj_notBefore(0)
-        cert.gmtime_adj_notAfter(app.config['NEW_CERT_DURATION'])
+        cert.gmtime_adj_notAfter(app.config['NEWCERT_DURATION'])
         cert.set_issuer(ca_cert.get_subject())
         cert.set_pubkey(cert_key)
 
@@ -53,7 +53,7 @@ def create_cert(cert_name, cert_email, cert_sn, cert_key):
         ]
         cert.add_extensions(cert_ext)
 
-        cert.sign(ca_key, app.config['NEW_CERT_SIGN-DIGEST'])
+        cert.sign(ca_key, app.config['NEWCERT_SIGNDIGEST'])
 
         return (cert)
 
