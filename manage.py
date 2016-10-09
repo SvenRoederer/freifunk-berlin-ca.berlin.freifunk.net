@@ -105,6 +105,7 @@ def show():
         prompt = "ID: {} - Email: {}"
         print(prompt.format(request.id, request.email))
 
+
 # taken from https://gist.github.com/ril3y/1165038
 def create_cert(cert_name, cert_email, cert_sn, cert_key):
     """
@@ -120,7 +121,7 @@ def create_cert(cert_name, cert_email, cert_sn, cert_key):
 
     if True:
 
-        # create a self-signed cert
+        # create a new cert
         cert = crypto.X509()
         cert.set_version(0x02)  # X509-Version 3
         cert.get_subject().C = app.config['NEWCERT_COUNTRY']
@@ -152,8 +153,9 @@ def create_cert(cert_name, cert_email, cert_sn, cert_key):
 
         return (cert)
 
+
 def create_key():
-        """Create a 1024 RSA key-pair"""
+        """Create a key-pair as per config"""
         # create a key pair
         k = crypto.PKey()
         if app.config['NEWKEY_ALG'].lower() == 'rsa':
