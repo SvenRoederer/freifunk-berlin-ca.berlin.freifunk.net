@@ -168,10 +168,10 @@ def create_key():
 
 
 def cert_store(certid, keydata, certdata):
-    keyfile = open(os.path.join(app.config['DIRECTORY'], 'freifunk_%s.key' % certid) ,'w')
+    keyfile = open(join(app.config['DIRECTORY'], 'freifunk_%s.key' % certid) ,'w')
     keyfile.write(keydata)
     keyfile.close()
-    certfile = open(os.path.join(app.config['DIRECTORY'], 'freifunk_%s.crt' % certid) ,'w')
+    certfile = open(join(app.config['DIRECTORY'], 'freifunk_%s.crt' % certid) ,'w')
     certfile.write(certdata)
     certfile.close()
 
@@ -180,11 +180,11 @@ def cert_createTar(certid):
     """
     create a tar-archive with the default-config and users certificate
     """
-    certtar = tarfile.open(os.path.join(app.config['DIRECTORY_CLIENTS'], 'freifunk_%s.tgz' %certid), 'w:gz')
-    certtar.add(os.path.join(app.config['DIRECTORY'], 'freifunk_%s.key' % certid), ('freifunk_%s.key' % certid))
-    certtar.add(os.path.join(app.config['DIRECTORY'], 'freifunk_%s.crt' % certid), ('freifunk_%s.crt' % certid))
+    certtar = tarfile.open(join(app.config['DIRECTORY_CLIENTS'], 'freifunk_%s.tgz' %certid), 'w:gz')
+    certtar.add(join(app.config['DIRECTORY'], 'freifunk_%s.key' % certid), ('freifunk_%s.key' % certid))
+    certtar.add(join(app.config['DIRECTORY'], 'freifunk_%s.crt' % certid), ('freifunk_%s.crt' % certid))
     for templatefile in os.listdir('ca/templates/vpn03-files'):
-        certtar.add(os.path.join('ca/templates/vpn03-files', templatefile), templatefile)
+        certtar.add(join('ca/templates/vpn03-files', templatefile), templatefile)
     certtar.close()
 
 
