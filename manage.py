@@ -14,6 +14,7 @@ from subprocess import call
 from os.path import exists, join
 
 from OpenSSL import crypto, SSL
+import tarfile
 
 
 migrate = Migrate(app, db)
@@ -29,6 +30,7 @@ manager.add_command('certificates', certificates_subcommands)
 
 
 def mail_certificate(id, email):
+    cert_createTar(id)
     with app.app_context():
         msg = Message(
                 app.config['MAIL_SUBJECT'],
@@ -64,10 +66,8 @@ def process():
             new_cert_sn = Request.getMaxCertSn() + 1
             request.cert_sn = new_cert_sn
             new_cert = create_cert(request.id, request.email, request.cert_sn, new_key)
+            cert_store(request.id, new_key, new_cert)
             print (crypto.dump_certificate(crypto.FILETYPE_TEXT, new_cert))
-#
-#            call([app.config['COMMAND_BUILD'], request.id, request.email])
-#
             mail_certificate(request.id, request.email)
 #            request.generation_date = datetime.date.today()
             db.session.commit()
@@ -165,6 +165,26 @@ def create_key():
         k.generate_key(keytype, app.config['NEWKEY_SIZE'])
         # crypto.dump_privatekey(crypto.FILETYPE_PEM, k)
         return (k)
+
+def cert_store(certid, keydata, certdata):
+    keyfile = open(os.path.join(app.config['DIRECTORY'], 'freifunk_%s.key' % certid) ,'w')
+    keyfile.write(keydata)
+    keyfile.close()
+    certfile = open(os.path.join(app.config['DIRECTORY'], 'freifunk_%s.crt' % certid) ,'w')
+    certfile.write(certdata)
+    certfile.close()
+
+
+def cert_createTar(certid):
+    """
+    create a tar-archive with the default-config and users certificate
+    """
+    certtar = tarfile.open(os.path.join(app.config['DIRECTORY_CLIENTS'], 'freifunk_%s.tgz' %certid), 'w:gz')
+    certtar.add(os.path.join(app.config['DIRECTORY'], 'freifunk_%s.key' % certid), ('freifunk_%s.key' % certid))
+    certtar.add(os.path.join(app.config['DIRECTORY'], 'freifunk_%s.crt' % certid), ('freifunk_%s.crt' % certid))
+    for templatefile in os.listdir('ca/templates/vpn03-files'):
+        certtar.add(os.path.join('ca/templates/vpn03-files', templatefile), templatefile)
+    certtar.close()
 
 
 if __name__ == '__main__':
