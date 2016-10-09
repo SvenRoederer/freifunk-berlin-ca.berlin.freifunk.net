@@ -168,11 +168,11 @@ def create_key():
 
 
 def cert_store(certid, keydata, certdata):
-    keyfile = open(join(app.config['DIRECTORY'], 'freifunk_%s.key' % certid) ,'w')
-    keyfile.write(keydata)
+    keyfile = open(join(app.config['DIRECTORY'], 'freifunk_%s.key' % certid) ,'wb')
+    keyfile.write(crypto.dump_privatekey(crypto.FILETYPE_PEM, keydata))
     keyfile.close()
-    certfile = open(join(app.config['DIRECTORY'], 'freifunk_%s.crt' % certid) ,'w')
-    certfile.write(certdata)
+    certfile = open(join(app.config['DIRECTORY'], 'freifunk_%s.crt' % certid) ,'wb')
+    certfile.write(crypto.dump_certificate(crypto.FILETYPE_PEM, certdata))
     certfile.close()
 
 
