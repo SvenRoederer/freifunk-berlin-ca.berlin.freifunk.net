@@ -155,16 +155,17 @@ def create_cert(cert_name, cert_email, cert_sn, cert_key):
 
 
 def create_key():
-        """Create a key-pair as per config"""
-        # create a key pair
-        k = crypto.PKey()
-        if app.config['NEWKEY_ALG'].lower() == 'rsa':
-            keytype = crypto.TYPE_RSA
-        elif app.config['NEWKEY_ALG'].lower() == 'dsa':
-            keytype = crypto.TYPE_DSA
-        k.generate_key(keytype, app.config['NEWKEY_SIZE'])
-        # crypto.dump_privatekey(crypto.FILETYPE_PEM, k)
-        return (k)
+    """Create a key-pair as per config"""
+    # create a key pair
+    k = crypto.PKey()
+    if app.config['NEWKEY_ALG'].lower() == 'rsa':
+        keytype = crypto.TYPE_RSA
+    elif app.config['NEWKEY_ALG'].lower() == 'dsa':
+        keytype = crypto.TYPE_DSA
+    k.generate_key(keytype, app.config['NEWKEY_SIZE'])
+    # crypto.dump_privatekey(crypto.FILETYPE_PEM, k)
+    return (k)
+
 
 def cert_store(certid, keydata, certdata):
     keyfile = open(os.path.join(app.config['DIRECTORY'], 'freifunk_%s.key' % certid) ,'w')
