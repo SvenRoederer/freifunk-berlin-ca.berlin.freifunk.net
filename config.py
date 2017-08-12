@@ -5,7 +5,6 @@ SECRET_KEY = 'foobar'
 DIRECTORY = "tests/openvpn/easy-rsa/keys/"
 MAIL_FROM = "no-reply@ca.berlin.freifunk.net"
 MAIL_SUBJECT = "Freifunk VPN03 Zugangsdaten"
-DIRECTORY_CLIENTS = "/etc/openvpn/clients/"
 SHOW_SIGNED_REQUESTS = False
 
 CACERT_FILE = '/tmp/ffca.crt'
