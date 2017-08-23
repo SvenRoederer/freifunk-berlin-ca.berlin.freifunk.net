@@ -70,10 +70,10 @@ def process():
         confirm = input('>')
         if confirm in ['Y', 'y']:
             print('generating certificate')
-            call([app.config['COMMAND_BUILD'], request.id, request.email])
+#            call([app.config['COMMAND_BUILD'], request.id, request.email])
             request.generation_date = datetime.date.today()
             db.session.commit()
-            mail_certificate(request.id, request.email)
+#            mail_certificate(request.id, request.email)
             print()
         elif confirm in ['N', 'n']:
             print('rejecting request')
